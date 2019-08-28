@@ -1,0 +1,67 @@
+﻿@model User
+@{
+    ViewData["Title"] = "Index";
+    var user = Model;
+}
+
+<header>
+    <h2>Profile</h2>
+</header>
+<h4>Welcome @user.Username</h4>
+
+<div class="profileInfo">
+    @{
+        var BeerReviews = Model.BeerReviews;
+    }
+
+    @if (BeerReviews != null && BeerReviews.Count > 0)
+    {
+        @foreach (var review in BeerReviews)
+        {
+            <div class="beerReviewGrid">
+                
+                    <div id="reviewImage">
+                        <a asp-controller="Home" asp-action="BeerDetail" asp-route-id="@review.BeerReviewed.BeerId">
+                            <img id="beerImage2" src="~/images/beers/@(review.BeerReviewed.BeerId).jpg" alt="an image of @review.BeerReviewed.BeerName" />
+                        </a>
+                    </div>
+
+                    <div id="reviewName">
+                        <h3>
+                            <a asp-controller="Home" asp-action="BeerDetail" asp-route-id="@review.BeerReviewed.BeerId">
+                                <span class="text-average-rating">
+                                    @review.BeerReviewed.BeerName:
+                                </span>
+                            </a>
+                            <span class="rating">
+                                @if (review.ReviewRating > 0)
+                                {
+                                    @for (int i = ViewBag.Stars.Count; i >= 1; i--)
+                                    {
+                                        if ((i <= (int)review.ReviewRating))
+                                        {
+                                            <span class="static-star selected-star"></span>
+                                        }
+                                        else
+                                        {
+                                            <span class="static-star"></span>
+                                        }
+                                    }
+                                }
+                            </span>
+                            </h3>
+                    </div>
+
+                    <div id="reviewText">
+                        <p>@review.ReviewText</p>
+                    </div>
+                
+            </div>
+
+        }
+    }
+    else
+    {
+        <h5>No reviews.</h5>
+    }
+</div>

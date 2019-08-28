@@ -1,0 +1,143 @@
+﻿@model BeerViewModel
+@{
+    ViewData["Title"] = "BeerDetail";
+    var beerView = Model;
+    var beer = beerView.CurrentBeer;
+    var user = beerView.CurrentUser;
+}
+
+
+<header>
+    <h2>Beer Lowdown</h2>
+</header>
+<section class="centered-panel  beer-detail">
+
+        <h3 id="beerDetailName"><strong>@beer.BeerName</strong></h3>
+    <div class="nameAndImage">
+        <img id="beerImage2" src="~/images/beers/@(beer.BeerId).jpg" alt="an image of @beer.BeerName" />
+    </div>
+    <div class="beer-info">
+        <p id="beerDescription">
+            @beer.BeerDescription
+        </p>
+        <p id="abv">
+            @(beer.BeerAbv.ToString("#.#"))% ABV,
+            @foreach (var beerType in beer.BeerTypes)
+            {
+                @beerType.TypeName
+            }
+        </p>
+    </div>
+    <div class="servedByList">
+        <p>
+            Served By:
+            <ul id="servedBy">
+                @foreach (var brewery in beer.BreweriesServed)
+                {
+                    <li>
+                        <a asp-controller="Home" asp-action="BreweryDetail" asp-route-id="@brewery.BreweryId"><img id="breweryImage2" src="~/images/beers/brewery/@(brewery.BreweryId).jpg" alt="an image of @brewery.BreweryId" /></a>
+                        <br />
+                        <a asp-controller="Home" asp-action="BreweryDetail" asp-route-id="@brewery.BreweryId">@brewery.BreweryName</a>
+                    </li>
+                }
+            </ul>
+        </p>
+    </div>
+
+    <div class="create-review">
+        @if (user != null && Model.CurrentUserId != -1)
+        {
+        <form id="beerReviewForm" method="post" asp-controller="Home" asp-action="SaveBeerReview">
+            <label class="rating-label" asp-for="UserRating"></label>
+            <fieldset class="rating"><div class="stars-list">
+                @for (var i = ViewBag.Stars.Count; i >= 1; i--)
+                {
+                    var selected = (i == (int)beerView.UserRating) ? "checked" : string.Empty;
+
+                    <input type="radio" id="star@(i)" name="UserRating" value="@(i)" @selected /><label class="full" for="star@(i)" title="@ViewBag.Stars[i]"></label>
+                }
+            </div></fieldset>
+
+            <br />
+            <label class="review-label" asp-for="UserReviewText"></label>
+            @*<textarea class="review-text" asp-for="UserReviewText">@beerView.</textarea>*@
+            @Html.TextArea("UserReviewText", @beerView.UserReviewText)
+            <br />
+            <input type="hidden" name="BeerReviewId" value="@Model.UserReviewId" />
+            <input type="hidden" name="CurrentBeerId" value="@beer.BeerId" />
+            <input id="reviewButton" class="submit" type="submit" name="submit" value="Post Beer Review" />
+        </form>
+        }
+        else
+        {
+            <h5>You must be logged in to review a beer!</h5>
+        }
+    </div>
+    <div class="avg-rating">
+        @if (@beerView.AverageRating > 0)
+        {
+        <div class="rating">
+            <h4><span class="text-average-rating">Average rating: </span>
+            @for (int i = ViewBag.Stars.Count; i >= 1; i--)
+            {
+                if ((i <= (int)beerView.AverageRating))
+                {
+                    <span class="static-star selected-star"></span>
+                }
+                else
+                {
+                    <span class="static-star"></span>
+                }
+            }
+
+            </h4>
+        </div>
+
+        }
+        else
+        {
+            @*<p>Not enough reviews to give an average rating.</p>*@
+        }
+    </div>
+    <div class="reviews">
+        @{
+            var BeerReviews = Model.BeerReviews;
+        }
+
+        @if (BeerReviews != null && BeerReviews.Count > 0)
+        {
+            @foreach (var review in BeerReviews)
+            {
+                //if (review.UserReviewing.Id != Model.CurrentUserId)
+                //{
+        <div class="beer-review">
+            <p>
+            <div class="rating">
+                <span class="text-average-rating">@review.UserReviewing.Username says: </span>
+                    @for (int i = ViewBag.Stars.Count; i >= 1; i--)
+                    {
+                        if ((i <= (int)review.ReviewRating))
+                        {
+                            <span class="static-star selected-star"></span>
+                        }
+                        else
+                        {
+                            <span class="static-star"></span>
+                        }
+                    }
+            </div>
+            </p>
+            <p>@review.ReviewText</p>
+        </div>
+                //}
+
+            }
+        }
+        else
+        {
+            <h5>No reviews.</h5>
+        }
+    </div>
+
+</section>
+

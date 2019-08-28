@@ -1,0 +1,51 @@
+﻿@model BeerSearch
+@{
+    ViewData["Title"] = "SearchBeers";
+    var beers = Model.BeerResults;
+    beers = beers.OrderBy(o => o.BeerName).ToList();
+
+}
+<section class="centeredPanel search-results">
+
+
+    @if (beers.Count == 0)
+    {
+        <header>
+            <h2>No beers found!</h2>
+            <p>No brews for you!</p>
+            <img src="~/images/sad-beer.png" width="100px" alt="Sad Beer" />
+        </header>
+    }
+
+    else
+    {
+        <header>
+            <h2>Fine Beers</h2>
+        </header>
+        <div class="search-results-subcontainer">
+            @foreach (var beer in beers)
+            {
+                var beerTypes = String.Empty;
+                foreach (var types in beer.BeerTypes)
+                {
+                    beerTypes += types.TypeName + " ,";
+                }
+                beerTypes = beerTypes.Substring(0, beerTypes.Length - 2);
+                @*<div class="searchResultGrid">*@
+                    <div class="search-result">
+                        <div class="search-img">
+                            <a asp-controller="Home" asp-action="BeerDetail" asp-route-id="@beer.BeerId">
+                                <img id="beerImage" src="~/images/beers/@(beer.BeerId).jpg" alt="an image of @beer.BeerName" />
+                            </a>
+                        </div>
+                        <div class="search-details">
+                            <h3><a asp-controller="Home" asp-action="BeerDetail" asp-route-id="@beer.BeerId"><strong>@beer.BeerName</strong></a></h3>
+
+                            <p>@(beer.BeerAbv.ToString("#.#"))% ABV, @beerTypes</p>
+                        </div>
+                    </div>
+                @*</div>*@
+            }
+        </div>
+        }
+    </section>

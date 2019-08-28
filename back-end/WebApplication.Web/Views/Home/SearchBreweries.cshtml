@@ -1,0 +1,57 @@
+﻿@model BrewerySearch
+@{
+    ViewData["Title"] = "SearchBreweries";
+    var breweries = Model.BreweryResults;
+    breweries = breweries.OrderBy(o => o.BreweryName).ToList();
+}
+<section class="centeredPanel search-results">
+    @if (breweries.Count == 0)
+    {
+    <header>
+        <h2>No breweries found!</h2>
+        <p>No brews for you!</p>
+        <img src="~/images/sad-beer.png" width="100px" alt="Alternate Text" />
+    </header>
+    }
+    else
+    {
+        <header>
+            <h2>Fine Beer Establishments</h2>
+        </header>
+        <div class="search-results-subcontainer">
+            @foreach (var brewery in breweries)
+            {
+                <div class="search-result">
+                    <div class="search-img">
+                        <a asp-controller="Home" asp-action="BreweryDetail" asp-route-id="@brewery.BreweryId">
+                            <img src="~/images/beers/brewery/@(brewery.BreweryId).jpg" alt="an image of @brewery.BreweryName" />
+                        </a>
+                    </div>
+                    <div class="search-details">
+                        <h3><a asp-controller="Home" asp-action="BreweryDetail" asp-route-id="@brewery.BreweryId"><strong>@brewery.BreweryName</strong></a></h3>
+                        <p>
+                            @brewery.BreweryAddress1
+                            @brewery.BreweryCity
+                            @brewery.BreweryZip
+                        </p>
+
+                        @if (brewery.HappyHourDetails == null || brewery.HappyHourDetails == "" || brewery.HappyHourStartTime == null || brewery.HappyHourStartTime == "" || brewery.HappyHourEndTime == null || brewery.HappyHourEndTime == "")
+                        {
+                            <p class="happy-hour">No Happy Hour Listed</p>
+                        }
+                        else
+                        {
+                            <h6>Happy Hour:</h6>
+                            <p class="happy-hour">
+                                @brewery.HappyHourDetails
+                                @brewery.HappyHourStartTime pm to
+                                @brewery.HappyHourEndTime pm
+                            </p>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</section>
+

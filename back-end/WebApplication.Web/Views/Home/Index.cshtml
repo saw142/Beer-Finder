@@ -1,0 +1,24 @@
+﻿@using WebApplication.Web.Models
+@model CombinedSearch
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div id="searchPage">
+    <h2 id="homePageTitle"><img src="~/images/logo.png" alt="CLEbrews" style="width: 200px" /></h2>
+
+    <h4 id="welcomeStatment">Welcome to CLEbrews search!</h4>
+    <p>We're here to help you find fantastic beers from extraordinary establishments.</p>
+    <p>Please enter your beer or brewery below.</p>
+
+    <form asp-controller="Home" asp-action="SearchBeersAndBreweries" method="get" id="searchForm">
+        <div class="search-container">
+        @Html.DropDownList("SearchType", Model.SearchType, "Find...")
+            <input asp-for="SearchText" />
+            <button type="submit" name="submit" value="Get Brews!" id="SearchButton" class="button"><i class="fa fas fa-beer"></i></button>
+        </div>
+    </form>
+    <div class="image-container">
+        <img id="searchPageImage" src="~/images/beers/Brewery/masthead-indoor-image.jpg" alt="an image of indoor brewery" />
+    </div>
+</div>

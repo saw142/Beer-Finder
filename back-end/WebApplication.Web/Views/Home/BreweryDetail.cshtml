@@ -1,0 +1,72 @@
+﻿@model Brewery
+@{
+    ViewData["Title"] = "GetBrewery";
+    var brewery = Model;
+}
+<header>
+    <h2>Brewery Information</h2>
+</header>
+<section class="centeredPanel brewery-detail">
+
+
+    
+
+
+
+
+    <div class="breweryImageAddressHappyHour">
+
+        <h3>@brewery.BreweryName</h3>
+        <h5>est. @brewery.EstablishedDate</h5>
+
+        <img id="breweryImage2" src="~/images/beers/brewery/@(brewery.BreweryId).jpg" alt="an image of @brewery.BreweryName" />
+
+
+        <p>
+            @brewery.BreweryAddress1
+            @brewery.BreweryCity, @Model.BreweryZip
+
+        </p>
+
+        @if (brewery.HappyHourDetails == null || brewery.HappyHourDetails == "" || brewery.HappyHourStartTime == null || brewery.HappyHourStartTime == "" || brewery.HappyHourEndTime == null || brewery.HappyHourEndTime == "")
+        {
+
+
+            <p><strong>Happy Hour: None</strong></p>
+        }
+        else
+        {
+
+
+
+            <p>
+                <strong>Happy Hour:</strong> <br /> @brewery.HappyHourDetails <br /> @(brewery.HappyHourStartTime)pm to @(brewery.HappyHourEndTime)pm
+
+            </p>
+
+        }
+
+    </div>
+
+    <p class="desc">
+        @brewery.Description
+    </p>
+
+    <div class="beerSelectionList">
+        <h3><strong>Beer Selection</strong></h3>
+        <ul id="beerlist">
+            @foreach (var beer in brewery.BeersServed)
+            {
+            <li>
+                <a asp-controller="Home" asp-action="BeerDetail" asp-route-id="@beer.BeerId"><img id="beerImage2" src="~/images/beers/@(beer.BeerId).jpg" alt="an image of @beer.BeerId" /></a>
+                <br />
+                <a asp-controller="Home" asp-action="BeerDetail" asp-route-id="@beer.BeerId">@beer.BeerName</a>
+            </li>
+
+            }
+
+        </ul>
+    </div>
+</section>
+
+
